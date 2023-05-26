@@ -1,0 +1,16 @@
+name: vlogs
+description: A simple way to collect logs and send to the server via simple SDK.
+version: 1.0.0
+repository: https://github.com/CUBETIQ/vlogs_sdk_dart.git
+
+environment:
+    sdk: ^3.0.2
+
+dependencies:
+    http:
+    uuid:
+    logger:
+
+dev_dependencies:
+    lints: ^2.0.0
+    test: ^1.21.0
