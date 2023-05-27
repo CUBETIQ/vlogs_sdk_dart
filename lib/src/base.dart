@@ -93,9 +93,6 @@ class VLogs {
   }
 
   static VLogs createWith(String appId, String apiKey) {
-    return create(VLogsOptions(
-      appId: appId,
-      apiKey: apiKey,
-    ));
+    return create(VLogsOptions.builder().appId(appId).apiKey(apiKey).build());
   }
 }
