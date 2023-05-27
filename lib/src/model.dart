@@ -254,6 +254,43 @@ class Target {
     };
   }
 
+  // Create a merge
+  void merge(Target? defaultTarget) {
+    if (defaultTarget == null) return;
+    telegram ??= defaultTarget.telegram;
+    discord ??= defaultTarget.discord;
+  }
+
+  static Target withTelegram(chatId,
+          {String? token,
+          TelegramParseMode? parseMode,
+          bool? disabled,
+          dynamic extras}) =>
+      Target(
+        telegram: Telegram(
+          chatId: chatId,
+          token: token,
+          parseMode: parseMode,
+          disabled: disabled,
+          extras: extras,
+        ),
+      );
+
+  static Target withDiscord(webhookUrl,
+          {String? webhookId,
+          String? webhookToken,
+          bool? disabled,
+          dynamic extras}) =>
+      Target(
+        discord: Discord(
+          webhookUrl: webhookUrl,
+          webhookId: webhookId,
+          webhookToken: webhookToken,
+          disabled: disabled,
+          extras: extras,
+        ),
+      );
+
   static TargetBuilder builder() {
     return TargetBuilder();
   }
@@ -453,6 +490,7 @@ class VLogsOptions {
   String? apiKey;
   int? connectionTimeout;
   bool? testConnection;
+  Target? target;
 
   VLogsOptions({
     this.url,
@@ -460,6 +498,7 @@ class VLogsOptions {
     this.apiKey,
     this.connectionTimeout,
     this.testConnection,
+    this.target,
   });
 
   VLogsOptions._builder(VLogsOptionsBuilder builder)
@@ -467,7 +506,12 @@ class VLogsOptions {
         appId = builder._appId,
         apiKey = builder._apiKey,
         connectionTimeout = builder._connectionTimeout,
-        testConnection = builder._testConnection;
+        testConnection = builder._testConnection,
+        target = builder._target;
+
+  static VLogsOptionsBuilder builder() {
+    return VLogsOptionsBuilder();
+  }
 }
 
 class VLogsOptionsBuilder {
@@ -476,6 +520,7 @@ class VLogsOptionsBuilder {
   String? _apiKey;
   int? _connectionTimeout;
   bool? _testConnection;
+  Target? _target;
 
   VLogsOptionsBuilder();
 
@@ -501,6 +546,29 @@ class VLogsOptionsBuilder {
 
   VLogsOptionsBuilder testConnection(bool? testConnection) {
     _testConnection = testConnection;
+    return this;
+  }
+
+  VLogsOptionsBuilder target(Target? target) {
+    _target = target;
+    return this;
+  }
+
+  VLogsOptionsBuilder telegram(Telegram? telegram) {
+    if (_target == null) {
+      _target = TargetBuilder().telegram(telegram).build();
+    } else {
+      _target!.telegram = telegram;
+    }
+    return this;
+  }
+
+  VLogsOptionsBuilder discord(Discord? discord) {
+    if (_target == null) {
+      _target = TargetBuilder().discord(discord).build();
+    } else {
+      _target!.discord = discord;
+    }
     return this;
   }
 

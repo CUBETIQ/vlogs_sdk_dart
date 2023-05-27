@@ -8,7 +8,8 @@ void main() {
   final API_KEY = "vlogs_gX9WwSdKatMNdpUClLU0IfCx575tvdoeQ";
 
   group('Run collecting the logs', () {
-    final sdk = VLogs.create(APP_ID, API_KEY);
+    final sdk = VLogs.create(
+        VLogsOptions.builder().appId(APP_ID).apiKey(API_KEY).build());
 
     setUp(() {
       expect(sdk, isNotNull);
@@ -16,7 +17,7 @@ void main() {
 
     test('Emit the logs to collector', () async {
       var request = Collector.builder()
-          .message("Hello World")
+          .message("Hello from Dart SDK 1.0.0")
           .source(CollectorSource.mobile.name)
           .type(CollectorType.log.name)
           .build();

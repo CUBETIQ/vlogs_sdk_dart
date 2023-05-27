@@ -6,7 +6,7 @@ void main() async {
   final APP_ID = "72bd14c306a91fa8a590330e3898ddcc";
   final API_KEY = "vlogs_gX9WwSdKatMNdpUClLU0IfCx575tvdoeQ";
 
-  final sdk = VLogs.create(APP_ID, API_KEY);
+  final sdk = VLogs.createWith(APP_ID, API_KEY);
 
   var request = Collector.builder()
       .message("Hello World")

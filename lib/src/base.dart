@@ -15,14 +15,10 @@ class VLogs {
   static final String API_KEY_HEADER_PREFIX = "x-api-key";
   static final int DEFAULT_CONNECT_TIMEOUT = 60; // seconds
 
-  late String _baseUrl;
-  late String _appId;
-  late String _apiKey;
-
+  late VLogsOptions _options;
   late VLogsService _service;
 
   VLogs(VLogsOptions options) {
-    _baseUrl = options.url ?? DEFAULT_VLOGS_URL;
     if (options.appId == null || options.apiKey == null) {
       throw Exception("AppId and ApiKey are required");
     }
@@ -30,21 +26,24 @@ class VLogs {
     if (options.apiKey!.isEmpty || options.appId!.isEmpty) {
       throw Exception("AppId and ApiKey are required");
     }
-    _appId = options.appId!;
-    _apiKey = options.apiKey!;
 
-    _service = VLogsService(_baseUrl);
+    // Set default options
+    _options = options;
+    _options.url ??= DEFAULT_VLOGS_URL;
+
+    // Initialize service
+    _service = VLogsService(_options.url!);
 
     _logger.i(
-        "VLogs: Initialized AppID: $_appId | SDK Version: $VERSION-$VERSION_CODE");
+        "VLogs: Initialized AppID: ${_options.appId} | SDK Version: $VERSION-$VERSION_CODE");
   }
 
   Future<CollectorResponse> collect(Collector request) async {
     _logger.d("VLogs: Collecting logs for ${request.getId()}");
 
     var headers = {
-      APP_ID_HEADER_PREFIX: _appId,
-      API_KEY_HEADER_PREFIX: _apiKey,
+      APP_ID_HEADER_PREFIX: _options.appId!,
+      API_KEY_HEADER_PREFIX: _options.apiKey!,
       "Content-Type": "application/json",
     };
 
@@ -59,10 +58,21 @@ class VLogs {
         .build();
 
     if (request.target == null) {
-      request.target = Target.builder().sdkInfo(sdkInfo).build();
+      if (_options.target != null) {
+        request.target = _options.target;
+      } else {
+        request.target = Target.builder().build();
+      }
     } else {
-      request.target!.sdkInfo = sdkInfo;
+      if (_options.target != null) {
+        request.target!.merge(_options.target!);
+      }
     }
+
+    // Set SDK info to request
+    request.target!.sdkInfo = sdkInfo;
+
+    // Append user agent to request
     request.userAgent ??= "vlogs-dart-sdk/$VERSION-$VERSION_CODE ($hostname)";
 
     var response = await _service.post(request.toJson(), headers: headers);
@@ -74,15 +84,16 @@ class VLogs {
         .then((value) => {_logger.d("VLogs: Collected logs response: $value")})
         .catchError((error) {
       _logger.e("VLogs: Error while collecting logs: $error");
+      return error;
     });
   }
 
-  static VLogs createWithOptions(VLogsOptions options) {
+  static VLogs create(VLogsOptions options) {
     return VLogs(options);
   }
 
-  static VLogs create(String appId, String apiKey) {
-    return createWithOptions(VLogsOptions(
+  static VLogs createWith(String appId, String apiKey) {
+    return create(VLogsOptions(
       appId: appId,
       apiKey: apiKey,
     ));
