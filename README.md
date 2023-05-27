@@ -16,7 +16,7 @@ void main() async {
 
   final sdk = VLogs.create(APP_ID, API_KEY);
 
-  var request = CollectorRequest.builder()
+  var request = Collector.builder()
       .message("Hello World")
       .source(CollectorSource.mobile.name)
       .type(CollectorType.log.name)

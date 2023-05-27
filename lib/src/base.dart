@@ -35,10 +35,13 @@ class VLogs {
 
     _service = VLogsService(_baseUrl);
 
-    _logger.i("VLogs: Initialized AppID: $_appId | SDK Version: $VERSION-$VERSION_CODE");
+    _logger.i(
+        "VLogs: Initialized AppID: $_appId | SDK Version: $VERSION-$VERSION_CODE");
   }
 
-  Future<CollectorResponse> collect(CollectorRequest request) async {
+  Future<CollectorResponse> collect(Collector request) async {
+    _logger.d("VLogs: Collecting logs for ${request.getId()}");
+
     var headers = {
       APP_ID_HEADER_PREFIX: _appId,
       API_KEY_HEADER_PREFIX: _apiKey,
@@ -66,13 +69,12 @@ class VLogs {
     return response;
   }
 
-  void collectAsync(CollectorRequest request) async {
-    try {
-      var response = await collect(request);
-      _logger.i("VLogs: ${response.message}");
-    } catch (e) {
-      _logger.e("VLogs: ${e.toString()}");
-    }
+  void collectAsync(Collector request) {
+    collect(request)
+        .then((value) => {_logger.d("VLogs: Collected logs response: $value")})
+        .catchError((error) {
+      _logger.e("VLogs: Error while collecting logs: $error");
+    });
   }
 
   static VLogs createWithOptions(VLogsOptions options) {

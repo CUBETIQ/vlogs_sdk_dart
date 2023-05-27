@@ -8,12 +8,18 @@ void main() async {
 
   final sdk = VLogs.create(APP_ID, API_KEY);
 
-  var request = CollectorRequest.builder()
+  var request = Collector.builder()
       .message("Hello World")
       .source(CollectorSource.mobile.name)
       .type(CollectorType.log.name)
       .build();
 
+  // Run this to test non-blocking collect
+  sdk.collectAsync(request);
+
+  // Run this to test blocking collect
   var response = await sdk.collect(request);
+
+  // Output the response
   print("Response: ${response.toJson()}");
 }

@@ -13,12 +13,14 @@ class Telegram {
   String? chatId;
   TelegramParseMode? parseMode;
   bool? disabled;
+  dynamic extras;
 
   Telegram({
     this.token,
     this.chatId,
     this.parseMode,
     this.disabled,
+    this.extras,
   });
 
   Map<String, dynamic> toMap() {
@@ -27,6 +29,7 @@ class Telegram {
       'chat_id': chatId,
       'parse_mode': parseMode,
       'disabled': disabled,
+      'extras': extras,
     };
   }
 
@@ -40,6 +43,7 @@ class TelegramBuilder {
   String? _chatId;
   TelegramParseMode? _parseMode;
   bool? _disabled;
+  dynamic _extras;
 
   TelegramBuilder();
 
@@ -63,12 +67,18 @@ class TelegramBuilder {
     return this;
   }
 
+  TelegramBuilder extras(dynamic extras) {
+    _extras = extras;
+    return this;
+  }
+
   Telegram build() {
     return Telegram(
       token: _token,
       chatId: _chatId,
       parseMode: _parseMode,
       disabled: _disabled,
+      extras: _extras,
     );
   }
 }
@@ -78,19 +88,22 @@ class Discord {
   String? webhookToken;
   String? webhookUrl;
   bool? disabled;
+  dynamic extras;
 
   Discord({
     this.webhookId,
     this.webhookToken,
     this.webhookUrl,
     this.disabled,
+    this.extras,
   });
 
   Discord._builder(DiscordBuilder builder)
       : webhookId = builder._webhookId,
         webhookToken = builder._webhookToken,
         webhookUrl = builder._webhookUrl,
-        disabled = builder._disabled;
+        disabled = builder._disabled,
+        extras = builder._extras;
 
   Map<String, dynamic> toMap() {
     return {
@@ -98,6 +111,7 @@ class Discord {
       'webhook_token': webhookToken,
       'webhook_url': webhookUrl,
       'disabled': disabled,
+      'extras': extras,
     };
   }
 
@@ -111,6 +125,7 @@ class DiscordBuilder {
   String? _webhookToken;
   String? _webhookUrl;
   bool? _disabled;
+  dynamic _extras;
 
   DiscordBuilder();
 
@@ -131,6 +146,11 @@ class DiscordBuilder {
 
   DiscordBuilder disabled(bool? disabled) {
     _disabled = disabled;
+    return this;
+  }
+
+  DiscordBuilder extras(dynamic extras) {
+    _extras = extras;
     return this;
   }
 
@@ -270,7 +290,7 @@ class TargetBuilder {
   }
 }
 
-class CollectorRequest {
+class Collector {
   String? id;
   String? type;
   String? source;
@@ -281,7 +301,7 @@ class CollectorRequest {
   Target? target;
   List<String>? tags;
 
-  CollectorRequest(
+  Collector(
       {this.id,
       this.type,
       this.source,
@@ -318,12 +338,12 @@ class CollectorRequest {
 
   String toJson() => json.encode(toMap());
 
-  static CollectorRequestBuilder builder() {
-    return CollectorRequestBuilder();
+  static CollectorBuilder builder() {
+    return CollectorBuilder();
   }
 }
 
-class CollectorRequestBuilder {
+class CollectorBuilder {
   String? _id;
   String? _type;
   String? _source;
@@ -334,55 +354,55 @@ class CollectorRequestBuilder {
   Target? _target;
   List<String>? _tags;
 
-  CollectorRequestBuilder();
+  CollectorBuilder();
 
-  CollectorRequestBuilder id(String? id) {
+  CollectorBuilder id(String? id) {
     _id = id;
     return this;
   }
 
-  CollectorRequestBuilder type(String? type) {
+  CollectorBuilder type(String? type) {
     _type = type;
     return this;
   }
 
-  CollectorRequestBuilder source(String? source) {
+  CollectorBuilder source(String? source) {
     _source = source;
     return this;
   }
 
-  CollectorRequestBuilder message(String? message) {
+  CollectorBuilder message(String? message) {
     _message = message;
     return this;
   }
 
-  CollectorRequestBuilder data(dynamic data) {
+  CollectorBuilder data(dynamic data) {
     _data = data;
     return this;
   }
 
-  CollectorRequestBuilder userAgent(String? userAgent) {
+  CollectorBuilder userAgent(String? userAgent) {
     _userAgent = userAgent;
     return this;
   }
 
-  CollectorRequestBuilder timestamp(int? timestamp) {
+  CollectorBuilder timestamp(int? timestamp) {
     _timestamp = timestamp;
     return this;
   }
 
-  CollectorRequestBuilder target(Target? target) {
+  CollectorBuilder target(Target? target) {
     _target = target;
     return this;
   }
 
-  CollectorRequestBuilder tags(List<String>? tags) {
+  CollectorBuilder tags(List<String>? tags) {
     _tags = tags;
     return this;
   }
 
-  CollectorRequest build() {
-    return CollectorRequest(
+  Collector build() {
+    return Collector(
       id: _id,
       type: _type,
       source: _source,
@@ -412,6 +432,9 @@ class CollectorResponse {
   }
 
   String toJson() => json.encode(toMap());
+
+  @override
+  String toString() => toJson();
 
   factory CollectorResponse.fromMap(Map<String, dynamic> map) {
     return CollectorResponse(
