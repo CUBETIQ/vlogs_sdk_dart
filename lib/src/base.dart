@@ -9,8 +9,8 @@ class VLogs {
   static final _logger = Logger();
   static final String NAME = 'vlogs';
   static final String VERSION = '1.0.0';
-  static final String VERSION_CODE = '1';
-  static final String DEFAULT_VLOGS_URL = "https://vlogs-sg1.onrender.com";
+  static final String VERSION_CODE = '2';
+  static final String DEFAULT_VLOGS_URL = "https://hsg1-vlogs.ctdn.net";
   static final String APP_ID_HEADER_PREFIX = "x-app-id";
   static final String API_KEY_HEADER_PREFIX = "x-api-key";
   static final int DEFAULT_CONNECT_TIMEOUT = 60; // seconds
